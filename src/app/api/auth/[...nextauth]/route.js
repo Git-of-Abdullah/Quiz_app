@@ -48,15 +48,22 @@ import bcrypt from "bcryptjs"
     signIn: "/login", // this is your custom login page route
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.role = user.role || "user";
-      return token;
-    },
-    async session({ session, token }) {
-      session.user.role = token.role;
-      return session;
-    },
+  async jwt({ token, user }) {
+    // When the user signs in, store role and id in token
+    if (user) {
+      token.role = user.role || "user";
+      token.id = user.id; 
+    }
+    return token;
+  },
+  async session({ session, token }) {
+    
+    session.user.role = token.role;
+    session.user.id = token.id; 
+    return session;
   }
+}
+
 })
 
 export {handler as GET, handler as POST}
